@@ -61,13 +61,24 @@ namespace CMLMusicPlayer.Resources {
         }
         
         /// <summary>
-        ///   查找类似 Press Q to exit when this is running.
+        ///   查找类似 Project CMLMusicPlayer version {0}
+        ///
+        ///Press Q to exit when this is running.
         ///Please close IME when this app is running.
         ///This message appears 2 seconds. 的本地化字符串。
         /// </summary>
         internal static string Credits {
             get {
                 return ResourceManager.GetString("Credits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Adjusts the frame rate. (From 1 to 300) 的本地化字符串。
+        /// </summary>
+        internal static string FrameRateOption {
+            get {
+                return ResourceManager.GetString("FrameRateOption", resourceCulture);
             }
         }
         
