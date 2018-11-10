@@ -10,7 +10,7 @@ Use `.\CMLMusicPlayer -h` for help.
 
 Use `.\CMLMusicPlayer [path]` to play musics (.mp3, .wav, etc) in the specific `path`(which is a folder!).
 
-	- If `path` is not specified, the default path is `Musics` folder under the current folder where the executable is.
+- If `path` is not specified, the default path is `Musics` folder under the current folder where the executable is.
 
 ## 2 Progress
 
