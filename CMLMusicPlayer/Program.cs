@@ -45,6 +45,8 @@ namespace CMLMusicPlayer
             };
             player.Run();
 
+            Console.ReadLine();
+
             //if (Process.GetProcessById())
         }
 

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
-using System.Timers;
-using CMLMusicPlayer.MusicProcess;
+using System.Threading;
+using Timer = System.Timers.Timer;
 using CMLMusicPlayer.Resources;
+using NAudio.Wave;
+using System.Timers;
+using System.IO;
+using System.Collections.Generic;
 
 namespace CMLMusicPlayer
 {
@@ -12,7 +15,6 @@ namespace CMLMusicPlayer
         //private const long Jan1st1970 = 621355968000000000L;
 
         private readonly Timer timer = new Timer(1000d);
-        private readonly MusicCT player = MusicCT.GetInstance();
 
         private bool musicEnd = true;
 
@@ -21,6 +23,7 @@ namespace CMLMusicPlayer
         private DateTime lastFrame;
 
         public string PlaySrc { get; set; }
+        public IEnumerable<string> files;
 
         public Version Version { get; set; }
 
@@ -31,28 +34,42 @@ namespace CMLMusicPlayer
         public MusicPlayer(string src) : this()
         {
             PlaySrc = src;
+            files = Directory.EnumerateFiles(src);
         }
 
         public void Run()
         {
             //player.FileName = Path.Combine(PlaySrc, "example.mp3");
-            player.FileName = "example.mp3";
-            player.Play();
-            DrawCredits();
+            //player.FileName = "example.mp3";
+            //player.Play();
+            //DrawCredits();
 
 
-            timer.Interval = 1000.0 / FR;
-            timer.Elapsed += Task;
-            timer.AutoReset = true;
+            //timer.Interval = 1000.0 / FR;
+            //timer.Elapsed += Task;
+            //timer.AutoReset = true;
 
-            startOn = DateTime.UtcNow;
-            lastFrame = DateTime.UtcNow;
-            timer.Enabled = true;
+            //startOn = DateTime.UtcNow;
+            //lastFrame = DateTime.UtcNow;
+            //timer.Enabled = true;
 
-            while (timer.Enabled)
+            //while (timer.Enabled)
+            //{
+            //    if (Console.ReadKey(true).Key == ConsoleKey.Q)
+            //        Environment.Exit(0);
+            //}
+            foreach (var file in files)
             {
-                if (Console.ReadKey(true).Key == ConsoleKey.Q)
-                    Environment.Exit(0);
+                using (var audioFile = new AudioFileReader(file))
+                using (var outputDevice = new WaveOutEvent() { Volume = 10 })
+                {
+                    outputDevice.Init(audioFile);
+                    outputDevice.Play();
+                    while (outputDevice.PlaybackState == PlaybackState.Playing)
+                    {
+                        Thread.Sleep(1000);
+                    }
+                }
             }
         }
 
