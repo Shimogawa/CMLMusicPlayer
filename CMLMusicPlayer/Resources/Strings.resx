@@ -124,6 +124,9 @@ Press Q to exit when this is running.
 Please close IME when this app is running.
 This message appears 2 seconds.</value>
   </data>
+  <data name="ExitWords" xml:space="preserve">
+    <value>Good bye!</value>
+  </data>
   <data name="FrameRateOption" xml:space="preserve">
     <value>Adjusts the frame rate. (From 1 to 300)</value>
   </data>

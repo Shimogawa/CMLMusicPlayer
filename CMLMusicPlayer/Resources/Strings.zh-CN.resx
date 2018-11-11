@@ -124,6 +124,9 @@
 运行时请关闭输入法
 这条信息将显示2秒。</value>
   </data>
+  <data name="ExitWords" xml:space="preserve">
+    <value>再见！</value>
+  </data>
   <data name="FrameRateOption" xml:space="preserve">
     <value>调整帧率。（从1至300）</value>
   </data>

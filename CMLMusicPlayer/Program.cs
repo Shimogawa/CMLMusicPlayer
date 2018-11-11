@@ -41,11 +41,9 @@ namespace CMLMusicPlayer
             var player = new MusicPlayer(src)
             {
                 Version = ver,
-                FR = frameRate
+                FR = frameRate > 120 ? 120 : frameRate
             };
             player.Run();
-
-            Console.ReadLine();
 
             //if (Process.GetProcessById())
         }
