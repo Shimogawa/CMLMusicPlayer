@@ -88,8 +88,5 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Strings.zh-CN.resx" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="MusicProcess\" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
