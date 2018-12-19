@@ -15,7 +15,6 @@ namespace CMLMusicPlayer
     class Program
     {
         private static string src;
-        private static int frameRate = 60;
         private static Version ver;
 
         static void Main(string[] args)
