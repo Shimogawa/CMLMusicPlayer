@@ -1,37 +1,4 @@
-
-
-<style>
-.container { 
-  height: 500px;
-  position: relative;
-}
-
-.vertical-center {
-  margin: 10;
-  position: absolute;
-  top: 50%;
-  -ms-transform: translateY(-300%);
-  transform: translateY(-300%);
-
-    -ms-transform: translateX(+30%);
-  transform: translateX(+15%);
-}
-</style>
-
-<div class="container">
-  <div class="vertical-center">
-    <p>
-    <h1>CML Music Player</h1>
-    </p>
-  </div>
-</div>
-
-<div style="page-break-after: always;"></div>
-
-<h1>
-</h1>
-    
-<div style="page-break-after: always;"></div>
+# CML Music Player
 
 ## Modification Log
 [Skipped]
