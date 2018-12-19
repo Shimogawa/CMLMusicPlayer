@@ -1,13 +1,8 @@
 # CML Music Player
 
-## Modification Log
-[Skipped]
-| Date| Description|Author(s)|
-|---------------------|--------------------------------|----------------------------------|
-| | |
 
 ## Team Information
-[Skipped]
+Author: DXTsT, <name>
 
 
 ## Executive Summary
@@ -48,8 +43,12 @@ The minimum viable product (MVP) defines features and requirements that are give
 
 This section describes the application architecture.
 
+<div style="page-break-after: always;"></div>
+
 ## Acceptance Testing Plan
 * [...]
+
+<div style="page-break-after: always;"></div>
 
 ## Unit Testing Plan
 Report testing  progress of each unit
