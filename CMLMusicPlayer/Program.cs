@@ -23,7 +23,7 @@ namespace CMLMusicPlayer
 			application.Run();
 			if (args.Length == 0)
 			{
-				args = new[] { "-h" };
+				//args = new[] { "-h" };
 				args = new[]
 				{
 					"-p", src
