@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CMLMusicPlayer.Arguments;
+using System;
 
 namespace CMLMusicPlayer
 {
@@ -13,16 +14,9 @@ namespace CMLMusicPlayer
 
 		private const int DEFAULT_FRAMERATE = 60;
 
-		public CMLApplication()
+		public CMLApplication(CMLConfig config)
 		{
 			this.frameRate = DEFAULT_FRAMERATE;
-			init();
-		}
-
-		// Program用来处理程序参数，之后将所需参数传递到CMLApplication里面执行
-		public CMLApplication(int frameRate)
-		{
-			this.frameRate = frameRate;
 			init();
 		}
 
@@ -32,8 +26,9 @@ namespace CMLMusicPlayer
 			random = new Random();
 		}
 		
-		private void test()
+		private void draw()
 		{
+			Console.Clear();
 			int width = Console.WindowWidth;
 			int height = Console.WindowHeight;
 			int x = random.Next(width);
@@ -49,13 +44,13 @@ namespace CMLMusicPlayer
 			{
 				// 主要绘制函数区域
 
-				test();
+				draw();
 
 
 				long delta;
 
 				// [1s / frameRate] refresh duration 
-				while ((delta = DateTime.Now.Ticks - currentTime) < (1e7 / (double)frameRate))
+				while ((delta = DateTime.Now.Ticks - currentTime) < (1e7 / frameRate))
 					;
 				deltaTime = delta / 1e7;
 				currentTime = DateTime.Now.Ticks;

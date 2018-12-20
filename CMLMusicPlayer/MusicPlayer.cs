@@ -10,6 +10,7 @@ using System.Collections.Generic;
 
 namespace CMLMusicPlayer
 {
+	// 这个类耦合过高了
 	public class MusicPlayer
 	{
 
