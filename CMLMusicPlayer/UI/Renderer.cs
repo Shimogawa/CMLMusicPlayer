@@ -31,6 +31,21 @@ namespace CMLMusicPlayer.UI
 
 		}
 
+		private void drawSpecialChar(int c, int j)
+		{
+			switch (c)
+			{
+				case (int)CMLCharacter.FULL_BLOCK:
+					{
+						if (j % 2 == 0)
+							Console.Write('\u2588');
+						break;
+					}
+				default:
+					break;
+			}
+		}
+
 		public void Present()
 		{
 			for(int i = 0; i < Rows; i++)
@@ -38,30 +53,14 @@ namespace CMLMusicPlayer.UI
 				for(int j = 0; j < Cols; j++)
 				{
 					Console.SetCursorPosition(j, i);
-					//if (j % 2 == 1)
-					//{
-					//	Console.Write('\u2588');
-					//	continue;
-					//}
 					if (gameScreen[i, j] >= 1000000)
 					{
-						switch (gameScreen[i, j])
-						{
-							case (int)CMLCharacter.FULL_BLOCK:
-								{
-									if(j %2 == 0)
-									Console.Write('\u2588');
-									break;
-								}
-							default:
-								break;
-						}
+						drawSpecialChar(gameScreen[i, j], j);
 					}
 					else
 					{
 						Console.Write((char)gameScreen[i, j]);
 					}
-					//Console.Write('\u2588');
 				}
 			}
 		}
