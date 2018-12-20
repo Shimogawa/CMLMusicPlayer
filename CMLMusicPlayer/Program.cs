@@ -41,12 +41,9 @@ namespace CMLMusicPlayer
 
 			var player = new MusicPlayer(src)
 			{
-				Version = ver,
-				FR = frameRate > 120 ? 120 : frameRate
+				Version = ver
 			};
 			player.Run();
-
-			if (Process.GetProcessById())
 
 		}
 
@@ -72,7 +69,7 @@ namespace CMLMusicPlayer
 
 			var pathArg = app.Argument("path", "The path of the music folder");
 
-			frameRate = 60;
+			var frameRate = 60;		// TODO: use the framerate into CMLApplication.
 
 			app.OnExecute(() =>
 			{

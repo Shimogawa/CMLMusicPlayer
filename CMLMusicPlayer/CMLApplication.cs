@@ -35,6 +35,7 @@ namespace CMLMusicPlayer
 			count = 0;
 			random = new Random();
 		}
+		
 		private void test()
 		{
 			int width = Console.WindowWidth;
