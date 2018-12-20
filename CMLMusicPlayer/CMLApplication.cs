@@ -31,10 +31,15 @@ namespace CMLMusicPlayer
 			Console.Clear();
 			int width = Console.WindowWidth;
 			int height = Console.WindowHeight;
-			int x = random.Next(width);
-			int y = random.Next(height);
-			Console.SetCursorPosition(x, y);
-			Console.Write(count++);
+			for(int i = 0; i < 10; i++)
+			{
+				for(int j = 0; j < 10; j++)
+				{
+					Console.SetCursorPosition(i, j);
+					Console.Write('■');
+				}
+			}
+
 		}
 
 		public void Run()
