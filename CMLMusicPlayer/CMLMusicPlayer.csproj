@@ -71,6 +71,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Renderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -91,8 +92,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Strings.zh-CN.resx" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

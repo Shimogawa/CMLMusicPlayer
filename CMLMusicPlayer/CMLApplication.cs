@@ -1,18 +1,27 @@
 ﻿using CMLMusicPlayer.Arguments;
+using CMLMusicPlayer.UI;
 using System;
 
 namespace CMLMusicPlayer
 {
 	public class CMLApplication
 	{
+		public Random Random
+		{
+			get { return random; }
+		}
+
+		public static CMLApplication Me;
+
 		private long currentTime;
 		private double deltaTime;
 		private Random random;
 		private int count;
+		private Renderer renderer;
 
 		private readonly int frameRate;
 
-		private const int DEFAULT_FRAMERATE = 60;
+		private const int DEFAULT_FRAMERATE = 20;
 
 		public CMLApplication(CMLConfig config)
 		{
@@ -22,24 +31,18 @@ namespace CMLMusicPlayer
 
 		private void init()
 		{
+			Console.CursorVisible = false;
 			count = 0;
 			random = new Random();
+			renderer = new Renderer(10, 10);
+			Me = this;
 		}
 		
 		private void draw()
 		{
-			Console.Clear();
-			int width = Console.WindowWidth;
-			int height = Console.WindowHeight;
-			for(int i = 0; i < 10; i++)
-			{
-				for(int j = 0; j < 10; j++)
-				{
-					Console.SetCursorPosition(i, j);
-					Console.Write('■');
-				}
-			}
-
+			renderer.ResetBuffer();
+			renderer.Test(1, 1);
+			renderer.Present();
 		}
 
 		public void Run()
