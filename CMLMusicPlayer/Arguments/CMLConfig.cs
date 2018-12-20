@@ -1,22 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace CMLMusicPlayer.Arguments
 {
 	/// <summary>
-	/// 用于存储配置信息（文件名，……）
+	/// Used for the configuration of the app.
 	/// </summary>
 	public class CMLConfig
 	{
-		public string FileName { get; set; }
-		public int FrameRate { get; set; }
+		/// <summary>
+		/// The music folder.
+		/// </summary>
+		public string MusicFolder { get; set; }
+
+		/// <summary>
+		/// The frame rate.
+		/// </summary>
+		public int FrameRate
+		{
+			get => ArgParser.CheckFrameRate(frameRate);
+			set => frameRate = value;
+		}
+
+		private int frameRate;
 
 		public CMLConfig()
 		{
-
 		}
 	}
 }

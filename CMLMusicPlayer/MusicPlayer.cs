@@ -14,22 +14,9 @@ namespace CMLMusicPlayer
 	public class MusicPlayer
 	{
 
-		//private const long Jan1st1970 = 621355968000000000L;
-
-		private readonly Timer timer = new Timer(1000d);
-
 		private bool musicEnd = true;
-
-		private int frames = 0;
-		private DateTime startOn;
-		private DateTime lastFrame;
-
-		// START song files
-		#region song files
-		private List<string> files;
-		private int current = 0;
-		#endregion
-		// END song files
+		
+		private int currentSong = 0;
 
 		private Thread playSongThread;
 
@@ -39,48 +26,40 @@ namespace CMLMusicPlayer
 
 		public Version Version { get; set; }
 
-		public int FR { get; set; }
+		public List<string> Files { get; private set; }
 
 		public MusicPlayer() { }
 
 		public MusicPlayer(string src) : this()
 		{
 			PlaySrc = src;
-			files = new List<string>(Directory.EnumerateFiles(src));
+			Files = new List<string>(Directory.EnumerateFiles(src));
 		}
 
 		public void Run()
 		{
 			DrawCredits();
-			current = 0;
-
-			timer.Interval = 1000.0 / FR;
-			timer.Elapsed += Task;
-			timer.AutoReset = true;
-
-			startOn = DateTime.UtcNow;
-			lastFrame = DateTime.UtcNow;
-			timer.Enabled = true;
+			currentSong = 0;
 
 			// TODO: put key press event into a new thread/event.
-			while (timer.Enabled)
-			{
-				var key = Console.ReadKey(true).Key;
-				switch (key)
-				{
-					case ConsoleKey.Q:
-						{
-							timer.Enabled = false;
-							Exit();
-							break;
-						}
-					case ConsoleKey.N:
-						NextSong();
-						break;
-					default:
-						break;
-				}
-			}
+//			while (timer.Enabled)
+//			{
+//				var key = Console.ReadKey(true).Key;
+//				switch (key)
+//				{
+//					case ConsoleKey.Q:
+//						{
+//							timer.Enabled = false;
+//							Exit();
+//							break;
+//						}
+//					case ConsoleKey.N:
+//						NextSong();
+//						break;
+//					default:
+//						break;
+//				}
+//			}
 		}
 
 		private void CheckKeyboard()
@@ -90,7 +69,7 @@ namespace CMLMusicPlayer
 
 		private void Task(object source, ElapsedEventArgs e)
 		{
-			frames++;
+//			frames++;
 			//DrawProgress();
 
 			if (musicEnd && (playSongThread == null || !playSongThread.IsAlive))
@@ -103,12 +82,11 @@ namespace CMLMusicPlayer
 
 		}
 
-		private void DrawList()
+		public void DrawList()
 		{
-			Console.Clear();
-			for (int i = 0; i < files.Count; i++)
+			for (int i = 0; i < Files.Count; i++)
 			{
-				Console.WriteLine($"{(i == current ? ">" : "")}{files[i]}");
+				Console.WriteLine($"{(i == currentSong ? ">" : "")}{Files[i]}");
 			}
 		}
 
@@ -119,18 +97,18 @@ namespace CMLMusicPlayer
 				height--;
 			Console.SetCursorPosition(0, height - 1);
 
-			Console.Write("Draw Prog, Avg FR: {0:F2}, Cur FR: {1:F2}\r",
-				FrameRate1(), FrameRate2());
+//			Console.Write("Draw Prog, Avg FR: {0:F2}, Cur FR: {1:F2}\r",
+//				FrameRate1(), FrameRate2());
 		}
 
 		private void PlaySong()
 		{
-			using (var audioFile = new AudioFileReader(files[current]))
+			using (var audioFile = new AudioFileReader(Files[currentSong]))
 			using (var outputDevice = new WaveOutEvent() { Volume = 0.7f })
 			{
 				outputDevice.Init(audioFile);
 				outputDevice.Play();
-				while (outputDevice.PlaybackState == PlaybackState.Playing && timer.Enabled)
+				while (outputDevice.PlaybackState == PlaybackState.Playing)
 				{
 					Thread.Sleep(1000);
 				}
@@ -141,8 +119,9 @@ namespace CMLMusicPlayer
 		private void NextSong()
 		{
 			playSongThread.Abort();
-			current++;
-			if (current >= files.Count) current = current - files.Count;
+			playSongThread = null;
+			currentSong++;
+			if (currentSong >= Files.Count) currentSong = currentSong - Files.Count;
 			musicEnd = true;
 		}
 
@@ -153,41 +132,27 @@ namespace CMLMusicPlayer
 			Thread.Sleep(2000);
 		}
 
-		private double FrameRate1()
-		{
-			var r = (DateTime.UtcNow - startOn).TotalMilliseconds;
-
-			return 1000.0 / (r / frames);
-		}
-
-		private double FrameRate2()
-		{
-			var r = (DateTime.UtcNow - lastFrame).TotalMilliseconds;
-			lastFrame = DateTime.UtcNow;
-			return 1000.0 / r;
-		}
-
 		private void Exit()
 		{
 			Console.Clear();
 			Console.WriteLine(Strings.ExitWords);
 		}
 
-		public void Test()
-		{
-			foreach (var file in files)
-			{
-				using (var audioFile = new AudioFileReader(file))
-				using (var outputDevice = new WaveOutEvent() { Volume = 10 })
-				{
-					outputDevice.Init(audioFile);
-					outputDevice.Play();
-					while (outputDevice.PlaybackState == PlaybackState.Playing)
-					{
-						Thread.Sleep(1000);
-					}
-				}
-			}
-		}
+//		public void Test()
+//		{
+//			foreach (var file in Files)
+//			{
+//				using (var audioFile = new AudioFileReader(file))
+//				using (var outputDevice = new WaveOutEvent() { Volume = 10 })
+//				{
+//					outputDevice.Init(audioFile);
+//					outputDevice.Play();
+//					while (outputDevice.PlaybackState == PlaybackState.Playing)
+//					{
+//						Thread.Sleep(1000);
+//					}
+//				}
+//			}
+//		}
 	}
 }

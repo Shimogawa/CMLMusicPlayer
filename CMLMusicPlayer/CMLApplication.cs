@@ -11,6 +11,17 @@ namespace CMLMusicPlayer
 			get { return random; }
 		}
 
+		/// <summary>
+		/// If the application is running.
+		/// </summary>
+		public bool IsEnabled
+		{
+			get; private set;
+		}
+
+		/// <summary>
+		/// The instance of this app.
+		/// </summary>
 		public static CMLApplication Me;
 
 		private long currentTime;
@@ -20,12 +31,12 @@ namespace CMLMusicPlayer
 		private Renderer renderer;
 
 		private readonly int frameRate;
-
-		private const int DEFAULT_FRAMERATE = 20;
+		private readonly long ticksPerFrame;
 
 		public CMLApplication(CMLConfig config)
 		{
-			this.frameRate = DEFAULT_FRAMERATE;
+			this.frameRate = config.FrameRate;
+			ticksPerFrame = (long)(1e7 / frameRate);
 			init();
 		}
 
@@ -36,6 +47,7 @@ namespace CMLMusicPlayer
 			random = new Random();
 			renderer = new Renderer(10, 10);
 			Me = this;
+			IsEnabled = true;
 		}
 		
 		private void draw()
@@ -43,12 +55,13 @@ namespace CMLMusicPlayer
 			renderer.ResetBuffer();
 			renderer.Test(1, 1);
 			renderer.Present();
+			Console.WriteLine(1 / deltaTime);	// Frame rate
 		}
 
 		public void Run()
 		{
 			currentTime = DateTime.Now.Ticks;
-			while (true)
+			while (IsEnabled)
 			{
 				// 主要绘制函数区域
 
@@ -58,7 +71,7 @@ namespace CMLMusicPlayer
 				long delta;
 
 				// [1s / frameRate] refresh duration 
-				while ((delta = DateTime.Now.Ticks - currentTime) < (1e7 / frameRate))
+				while ((delta = DateTime.Now.Ticks - currentTime) < ticksPerFrame)
 					;
 				deltaTime = delta / 1e7;
 				currentTime = DateTime.Now.Ticks;
