@@ -1,24 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.CommandLineUtils;
 using CMLMusicPlayer.Resources;
 
 
 namespace CMLMusicPlayer
 {
-    class Program
-    {
-        private static string src;
-        private static Version ver;
+	class Program
+	{
+		private static string src;
+		private static Version ver;
 
-        static void Main(string[] args)
-        {
+		static void Main(string[] args)
+		{
 			CMLApplication application = new CMLApplication();
 			application.Run();
 			if (args.Length == 0)
@@ -69,7 +65,7 @@ namespace CMLMusicPlayer
 
 			var pathArg = app.Argument("path", "The path of the music folder");
 
-			var frameRate = 60;		// TODO: use the framerate into CMLApplication.
+			var frameRate = 60;     // TODO: use the framerate into CMLApplication.
 
 			app.OnExecute(() =>
 			{
