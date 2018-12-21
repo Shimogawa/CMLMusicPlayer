@@ -8,7 +8,7 @@ namespace CMLMusicPlayer.Tests
 		[TestMethod()]
 		public void InitTest()
 		{
-			CMLApplication application = new CMLApplication();
+			// CMLApplication application = new CMLApplication();
 			Assert.Fail();
 		}
 

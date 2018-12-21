@@ -8,23 +8,29 @@ namespace CMLMusicPlayer.UI
 {
 	public class CoordMapper
 	{
-		private readonly int maxX;
-		private readonly int maxY;
+		public int MaxX
+		{
+			get;
+		}
+		public int MaxY
+		{
+			get;
+		}
 		private bool[,] coord;
 
 		public CoordMapper(int maxX, int maxY)
 		{
-			this.maxX = maxX;
-			this.maxY = maxY;
+			MaxX = maxX;
+			MaxY = maxY;
 			coord = new bool[maxX, maxY];
 			Reset();
 		}
 
 		public void Reset()
 		{
-			for (int i = 0; i < maxX; i++)
+			for (int i = 0; i < MaxX; i++)
 			{
-				for (int j = 0; j < maxY; j++)
+				for (int j = 0; j < MaxY; j++)
 				{
 					coord[i, j] = false;
 				}
@@ -37,6 +43,10 @@ namespace CMLMusicPlayer.UI
 		/// <returns></returns>
 		public Coordinate<int> QueryCoord(int x, int y)
 		{
+			if(x >= MaxX || y >= MaxY || x < 0 || y < 0)
+			{
+				throw new ArgumentOutOfRangeException("Coordinate of given character is out of range!");
+			}
 			Coordinate<int> result = new Coordinate<int>(0, y);
 			for (int i = 1; i <= x; i++)
 			{
@@ -44,7 +54,7 @@ namespace CMLMusicPlayer.UI
 					result.X++;
 				result.X++;
 			}
-			if(result.X >= maxX || result.Y > maxY)
+			if(result.X < 0 || result.X >= MaxX || result.Y < 0 || result.Y > MaxY)
 			{
 				throw new ArgumentOutOfRangeException("Coordinate of given character is out of range!");
 			}

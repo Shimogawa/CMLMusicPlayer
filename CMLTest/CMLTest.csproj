@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="CMLApplicationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\CoordMapperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
