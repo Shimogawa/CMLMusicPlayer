@@ -1,10 +1,12 @@
 # CMLMusicPlayer
 
-This is just a small music player for cmd under .NET framework 4.5+. If you are a `Linux` or `Mac OS` user, install `mono`.
+This is just a small music player for cmd under .NET framework 4.5+.
 
 This application is based on the library [NAudio](https://github.com/naudio/NAudio).
 
 ## 1 How to use
+
+Easiest way: double click.
 
 Use `.\CMLMusicPlayer -h` for help.
 

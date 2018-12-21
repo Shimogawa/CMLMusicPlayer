@@ -66,7 +66,7 @@
     <Compile Include="Arguments\ArgParser.cs" />
     <Compile Include="Arguments\CMLConfig.cs" />
     <Compile Include="CMLApplication.cs" />
-    <Compile Include="MusicPlayer.cs" />
+    <Compile Include="Music\MusicPlayer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
@@ -97,6 +97,5 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Strings.zh-CN.resx" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

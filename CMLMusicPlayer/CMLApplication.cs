@@ -3,6 +3,7 @@ using CMLMusicPlayer.UI;
 using System;
 using System.Text;
 using System.Threading;
+using CMLMusicPlayer.Resources;
 
 namespace CMLMusicPlayer
 {
@@ -17,6 +18,11 @@ namespace CMLMusicPlayer
 		{
 			get; private set;
 		}
+		
+		/// <summary>
+		/// The music player.
+		/// </summary>
+		public MusicPlayer MusicPlayer { get; private set; }
 
 		/// <summary>
 		/// The instance of this app.
@@ -27,16 +33,17 @@ namespace CMLMusicPlayer
 		private double deltaTime;
 		private int count;
 		private Renderer renderer;
-		private MusicPlayer musicPlayer;
 
 		private Thread keyboardThread;
 
 		private readonly int frameRate;
+		private readonly string musicFolder;
 		private readonly long ticksPerFrame;
 
 		public CMLApplication(CMLConfig config)
 		{
 			this.frameRate = config.FrameRate;
+			this.musicFolder = config.MusicFolder;
 			ticksPerFrame = (long)(1e7 / frameRate);
 			init();
 		}
@@ -47,7 +54,7 @@ namespace CMLMusicPlayer
 			count = 0;
 			Random = new Random();
 			renderer = new Renderer(10, 10);
-			musicPlayer = new MusicPlayer();
+			MusicPlayer = new MusicPlayer(musicFolder);
 			keyboardThread = new Thread(keyboardControl);
 			Me = this;
 			IsEnabled = true;
@@ -70,10 +77,12 @@ namespace CMLMusicPlayer
 			currentTime = DateTime.Now.Ticks;
 			while (IsEnabled)
 			{
-				// 主要绘制函数区域
+				// 更新区域
 
 				draw();
-
+				MusicPlayer.Update();
+				
+				// 更新区域
 
 				long delta;
 
@@ -98,8 +107,10 @@ namespace CMLMusicPlayer
 							break;
 						}
 					case ConsoleKey.N:
-						//NextSong();
-						break;
+						{
+							MusicPlayer.NextSong();
+							break;
+						}
 					default:
 						break;
 				}
@@ -109,6 +120,8 @@ namespace CMLMusicPlayer
 		private void exit()
 		{
 			IsEnabled = false;
+			Console.Clear();
+			Console.WriteLine(Strings.ExitWords);
 		}
 	}
 }
