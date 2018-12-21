@@ -2,10 +2,11 @@
 
 namespace CMLMusicPlayer.UI
 {
-	public enum CMLCharacter
-	{
-		FULL_BLOCK = 1000000 + 2588,
-	}
+	//public enum CMLCharacter
+	//{
+	//	EMPTY = -1,
+	//	FULL_BLOCK = 1000000 + 2588,
+	//}
 
 	public class Renderer
 	{
@@ -21,6 +22,8 @@ namespace CMLMusicPlayer.UI
 
 		private readonly int[,] gameScreen;
 
+		public const int EMPTY_CHAR = -1;
+
 		public Renderer(int rows, int cols)
 		{
 			Rows = rows;
@@ -29,20 +32,20 @@ namespace CMLMusicPlayer.UI
 
 		}
 
-		private void drawSpecialChar(int c, int j)
-		{
-			switch (c)
-			{
-				case (int)CMLCharacter.FULL_BLOCK:
-					{
-						if (j % 2 == 0)
-							Console.Write('\u2588');
-						break;
-					}
-				default:
-					break;
-			}
-		}
+		//private void drawSpecialChar(int c, int j)
+		//{
+		//	switch (c)
+		//	{
+		//		case (int)CMLCharacter.FULL_BLOCK:
+		//			{
+		//				if (j % 2 == 0)
+		//					Console.Write('\u2588');
+		//				break;
+		//			}
+		//		default:
+		//			break;
+		//	}
+		//}
 
 		public void Present()
 		{
@@ -51,14 +54,19 @@ namespace CMLMusicPlayer.UI
 				for(int j = 0; j < Cols; j++)
 				{
 					Console.SetCursorPosition(j, i);
-					if (gameScreen[i, j] >= 1000000)
+					if (gameScreen[i, j] == EMPTY_CHAR)
 					{
-						drawSpecialChar(gameScreen[i, j], j);
+						continue;
 					}
-					else
-					{
-						Console.Write((char)gameScreen[i, j]);
-					}
+					Console.Write((char)gameScreen[i, j]);
+					//if (gameScreen[i, j] >= 0x3000)
+					//{
+					//	drawSpecialChar(gameScreen[i, j], j);
+					//}
+					//else
+					//{
+					//	Console.Write((char)gameScreen[i, j]);
+					//}
 				}
 			}
 		}
@@ -78,6 +86,10 @@ namespace CMLMusicPlayer.UI
 		public void SetChar(int r, int c, int ch)
 		{
 			gameScreen[r, c] = ch;
+			if (c <= Cols - 1 && ch >= 0x3000)
+			{
+				gameScreen[r, c + 1] = EMPTY_CHAR;
+			}
 		}
 
 		public void SetLine(int row, string str)
@@ -85,16 +97,26 @@ namespace CMLMusicPlayer.UI
 			if (str.Length > Cols)
 				throw new NotImplementedException();    // TODO
 
-			for (int c = 0; c < str.Length; c++)
+			for (int sPtr = 0, gPtr = 0; gPtr < Cols && sPtr < str.Length; sPtr++, gPtr++)
 			{
-				gameScreen[row, c] = str[c];
+				gameScreen[row, gPtr] = str[sPtr];
+				if (str[sPtr] >= 0x3000)
+				{
+					if (gPtr < Cols - 1)
+					{
+						gPtr++;
+						gameScreen[row, gPtr] = EMPTY_CHAR;
+					}
+				}
 			}
 		}
 
 		public void SetColumn(int col, string str)
 		{
 			if (str.Length > Rows)
-				throw new NotImplementedException();	// TODO
+				throw new NotImplementedException();
+
+			// TODO: 如果穿过中文字符的后一格，需要将该中文字符也一并清除。
 
 			for (int r = 0; r < str.Length; r++)
 			{
@@ -110,7 +132,7 @@ namespace CMLMusicPlayer.UI
 				for (int j = c; j < c + 5; j++)
 				{
 					//用这个'█'就显示不了
-					gameScreen[i, j] = (int)CMLCharacter.FULL_BLOCK;
+					gameScreen[i, j] = '█';
 				}
 			}
 		}

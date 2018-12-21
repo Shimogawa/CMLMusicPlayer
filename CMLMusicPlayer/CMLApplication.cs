@@ -56,9 +56,9 @@ namespace CMLMusicPlayer
 		{
 			renderer.ResetBuffer();
 			renderer.Test(0, 0);
-			renderer.SetLine(6, "aaaaa");
+			renderer.SetLine(6, "你好");
 			renderer.Present();
-			Console.WriteLine(1 / deltaTime);	// Frame rate
+			Console.WriteLine(1 / deltaTime);   // Frame rate
 		}
 
 		public void Run()
