@@ -53,7 +53,7 @@ namespace CMLMusicPlayer
 			Console.CursorVisible = false;
 			count = 0;
 			Random = new Random();
-			renderer = new Renderer(10, 10);
+			renderer = new Renderer(Console.WindowWidth, Console.WindowHeight);
 			MusicPlayer = new MusicPlayer(musicFolder);
 			keyboardThread = new Thread(keyboardControl);
 			Me = this;
@@ -93,6 +93,9 @@ namespace CMLMusicPlayer
 				deltaTime = delta / 1e7;
 				currentTime = DateTime.Now.Ticks;
 			}
+			
+			// 处理Dispose
+			MusicPlayer.Dispose();
 		}
 
 		private void keyboardControl()
@@ -109,7 +112,12 @@ namespace CMLMusicPlayer
 						}
 					case ConsoleKey.N:
 						{
-							MusicPlayer.NextSong();
+							MusicPlayer.SwitchNextSong();
+							break;
+						}
+					case ConsoleKey.M:
+						{
+							MusicPlayer.SwitchPrevSong();
 							break;
 						}
 					default:

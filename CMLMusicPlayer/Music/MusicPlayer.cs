@@ -10,10 +10,11 @@ using System.Collections.Generic;
 
 namespace CMLMusicPlayer
 {
-	public class MusicPlayer
+	public class MusicPlayer : IDisposable
 	{
 
 		private bool musicEnd;
+		private bool isStopped;
 		private int currentSong;
 
 		private Thread playSongThread;
@@ -28,7 +29,8 @@ namespace CMLMusicPlayer
 		{
 			Version = typeof(Program).Assembly.GetName().Version;
 			musicEnd = true;
-			currentSong = 0;
+			isStopped = false;
+			currentSong = -1;
 		}
 
 		public MusicPlayer(string src) : this()
@@ -39,21 +41,14 @@ namespace CMLMusicPlayer
 
 		public void Update()
 		{
-			if (musicEnd && (playSongThread == null || !playSongThread.IsAlive))
+			if (isStopped)
+				return;
+			if (musicEnd)
 			{
-				playSongThread = new Thread(PlaySong);
-				playSongThread.Start();
-				musicEnd = false;
+				NextSong();
+				return;
 			}
 		}
-
-//		public void DrawList()
-//		{
-//			for (int i = 0; i < SongName.Count; i++)
-//			{
-//				Console.WriteLine($"{(i == currentSong ? ">" : "")}{SongName[i]}");
-//			}
-//		}
 
 		private void PlaySong()
 		{
@@ -70,33 +65,70 @@ namespace CMLMusicPlayer
 			musicEnd = true;
 		}
 
+		private void NextSong()
+		{
+			currentSong++;
+			if (currentSong >= SongName.Count)
+				currentSong -= SongName.Count;
+			playSongThread = new Thread(PlaySong);
+			playSongThread.Start();
+			musicEnd = false;
+		}
+
+		private void PrevSong()
+		{
+			currentSong--;
+			if (currentSong < 0)
+				currentSong += SongName.Count;
+			playSongThread = new Thread(PlaySong);
+			playSongThread.Start();
+			musicEnd = false;
+		}
+
 		/// <summary>
-		/// Start playing next song.
+		/// Interrupt and play the next song.
 		/// </summary>
-		public void NextSong()
+		public void SwitchNextSong()
 		{
 			playSongThread.Abort();
-			playSongThread = null;
-			currentSong++;
-			if (currentSong >= SongName.Count) currentSong = currentSong - SongName.Count;
 			musicEnd = true;
 		}
 
-//		public void Test()
-//		{
-//			foreach (var file in Files)
-//			{
-//				using (var audioFile = new AudioFileReader(file))
-//				using (var outputDevice = new WaveOutEvent() { Volume = 10 })
-//				{
-//					outputDevice.Init(audioFile);
-//					outputDevice.Play();
-//					while (outputDevice.PlaybackState == PlaybackState.Playing)
-//					{
-//						Thread.Sleep(1000);
-//					}
-//				}
-//			}
-//		}
+		/// <summary>
+		/// Interrupt and play the previous song.
+		/// </summary>
+		public void SwitchPrevSong()
+		{
+			playSongThread.Abort();
+			PrevSong();
+		}
+
+		/// <summary>
+		/// Stop current song entirely.
+		/// </summary>
+		public void Stop()
+		{
+			isStopped = true;
+			playSongThread.Abort();
+			playSongThread = null;
+		}
+
+		/// <summary>
+		/// Start playing the song from the beginning.
+		/// </summary>
+		public void Play()
+		{
+			isStopped = false;
+			musicEnd = false;
+			playSongThread = new Thread(PlaySong);
+			playSongThread.Start();
+		}
+
+		public void Dispose()
+		{
+			if (playSongThread != null)
+				playSongThread.Abort();
+			playSongThread = null;
+		}
 	}
 }
