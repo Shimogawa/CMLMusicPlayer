@@ -25,5 +25,28 @@ namespace CMLMusicPlayer.UI
 			this.X = X;
 			this.Y = Y;
 		}
+
+		// override object.Equals
+		public override bool Equals(object obj)
+		{
+			if (obj == null || GetType() != obj.GetType())
+			{
+				return false;
+			}
+			Coordinate<T> that = (Coordinate<T>)obj;
+			return X.Equals(that.X) && Y.Equals(that.Y);
+		}
+
+		// override object.GetHashCode
+		public override int GetHashCode()
+		{
+			unchecked // Overflow is fine, just wrap
+			{
+				int hash = 17;
+				hash = hash * 23 + X.GetHashCode();
+				hash = hash * 23 + Y.GetHashCode();
+				return hash;
+			}
+		}
 	}
 }

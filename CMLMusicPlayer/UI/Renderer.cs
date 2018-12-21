@@ -41,6 +41,13 @@ namespace CMLMusicPlayer.UI
 			maxRenderWidths = new int[bufferLimitX];
 		}
 
+
+		public void Draw(Shape shape, int x, int y)
+		{
+			shape.SetPos(x, y);
+			shape.Draw(this);
+		}
+
 		//private void drawSpecialChar(int c, int j)
 		//{
 		//	switch (c)
@@ -110,24 +117,14 @@ namespace CMLMusicPlayer.UI
 			}
 		}
 
-		//public void SetLine(int row, string str)
-		//{
-		//	if (str.Length > YLimit)
-		//		throw new NotImplementedException();    // TODO
-
-		//	for (int sPtr = 0, gPtr = 0; gPtr < YLimit && sPtr < str.Length; sPtr++, gPtr++)
-		//	{
-		//		gameScreen[row, gPtr] = str[sPtr];
-		//		if (str[sPtr] >= 0x3000)
-		//		{
-		//			if (gPtr < YLimit - 1)
-		//			{
-		//				gPtr++;
-		//				gameScreen[row, gPtr] = EMPTY_CHAR;
-		//			}
-		//		}
-		//	}
-		//}
+		public void DrawString(int x, int y, string str)
+		{
+			for(int i = 0; i < str.Length; i++)
+			{
+				SetChar(x + i, y, str[i]);
+			}
+			// 换行情况需要单独考虑
+		}
 
 		//public void SetColumn(int col, string str)
 		//{
@@ -149,7 +146,6 @@ namespace CMLMusicPlayer.UI
 			{
 				for (int j = c; j < c + 5; j++)
 				{
-					//用这个'█'就显示不了
 					SetChar(i, j, '█');
 				}
 			}
