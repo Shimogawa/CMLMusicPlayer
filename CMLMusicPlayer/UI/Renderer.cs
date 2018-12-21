@@ -41,6 +41,13 @@ namespace CMLMusicPlayer.UI
 			maxRenderWidths = new int[bufferLimitX];
 		}
 
+
+		public void Draw(Shape shape, int x, int y)
+		{
+			shape.SetPos(x, y);
+			shape.Draw(this);
+		}
+
 		//private void drawSpecialChar(int c, int j)
 		//{
 		//	switch (c)
@@ -149,7 +156,6 @@ namespace CMLMusicPlayer.UI
 			{
 				for (int j = c; j < c + 5; j++)
 				{
-					//用这个'█'就显示不了
 					SetChar(i, j, '█');
 				}
 			}
