@@ -2,6 +2,7 @@
 using CMLMusicPlayer.UI;
 using System;
 using System.Text;
+using System.Threading;
 
 namespace CMLMusicPlayer
 {
@@ -30,6 +31,9 @@ namespace CMLMusicPlayer
 		private Random random;
 		private int count;
 		private Renderer renderer;
+		private MusicPlayer musicPlayer;
+
+		private Thread keyboardThread;
 
 		private readonly int frameRate;
 		private readonly long ticksPerFrame;
@@ -47,6 +51,8 @@ namespace CMLMusicPlayer
 			count = 0;
 			random = new Random();
 			renderer = new Renderer(10, 10);
+			musicPlayer = new MusicPlayer();
+			keyboardThread = new Thread(keyboardControl);
 			Me = this;
 			IsEnabled = true;
 			Console.OutputEncoding = Encoding.UTF8;
@@ -64,6 +70,7 @@ namespace CMLMusicPlayer
 		public void Run()
 		{
 			Console.Clear();
+			keyboardThread.Start();
 			currentTime = DateTime.Now.Ticks;
 			while (IsEnabled)
 			{
@@ -74,12 +81,38 @@ namespace CMLMusicPlayer
 
 				long delta;
 
-				// [1s / frameRate] refresh duration 
+				// ticksPerFrame refresh duration 
 				while ((delta = DateTime.Now.Ticks - currentTime) < ticksPerFrame)
 					;
 				deltaTime = delta / 1e7;
 				currentTime = DateTime.Now.Ticks;
 			}
+		}
+
+		private void keyboardControl()
+		{
+			while (IsEnabled)
+			{
+				var key = Console.ReadKey(true).Key;
+				switch (key)
+				{
+					case ConsoleKey.Q:
+						{
+							exit();
+							break;
+						}
+					case ConsoleKey.N:
+						//NextSong();
+						break;
+					default:
+						break;
+				}
+			}
+		}
+
+		private void exit()
+		{
+			IsEnabled = false;
 		}
 	}
 }

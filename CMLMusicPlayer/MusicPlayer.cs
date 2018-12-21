@@ -24,11 +24,14 @@ namespace CMLMusicPlayer
 
 		public string PlaySrc { get; set; }
 
-		public Version Version { get; set; }
+		public Version Version { get; }
 
 		public List<string> Files { get; private set; }
 
-		public MusicPlayer() { }
+		private MusicPlayer()
+		{
+			Version = typeof(Program).Assembly.GetName().Version;
+		}
 
 		public MusicPlayer(string src) : this()
 		{
