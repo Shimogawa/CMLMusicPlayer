@@ -57,6 +57,9 @@
     <Reference Include="NAudio">
       <HintPath>..\res\NAudio.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -71,7 +74,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Coordinate.cs" />
+    <Compile Include="UI\CoordMapper.cs" />
     <Compile Include="UI\Renderer.cs" />
+    <Compile Include="UI\Shape.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
