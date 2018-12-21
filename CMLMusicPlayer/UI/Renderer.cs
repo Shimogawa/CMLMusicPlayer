@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CMLMusicPlayer.UI
 {
@@ -17,10 +13,12 @@ namespace CMLMusicPlayer.UI
 		{
 			get;
 		}
+
 		public int Cols
 		{
 			get;
 		}
+
 		private readonly int[,] gameScreen;
 
 		public Renderer(int rows, int cols)
@@ -82,6 +80,29 @@ namespace CMLMusicPlayer.UI
 			gameScreen[r, c] = ch;
 		}
 
+		public void SetLine(int row, string str)
+		{
+			if (str.Length > Cols)
+				throw new NotImplementedException();    // TODO
+
+			for (int c = 0; c < str.Length; c++)
+			{
+				gameScreen[row, c] = str[c];
+			}
+		}
+
+		public void SetColumn(int col, string str)
+		{
+			if (str.Length > Rows)
+				throw new NotImplementedException();	// TODO
+
+			for (int r = 0; r < str.Length; r++)
+			{
+				gameScreen[r, col] = str[r];
+			}
+		}
+
+		#region TEST
 		public void Test(int r, int c)
 		{
 			for(int i = r; i < r + 5; i++)
@@ -93,5 +114,6 @@ namespace CMLMusicPlayer.UI
 				}
 			}
 		}
+		#endregion
 	}
 }

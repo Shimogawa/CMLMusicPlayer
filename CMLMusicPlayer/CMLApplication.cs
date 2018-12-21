@@ -56,12 +56,14 @@ namespace CMLMusicPlayer
 		{
 			renderer.ResetBuffer();
 			renderer.Test(0, 0);
+			renderer.SetLine(6, "aaaaa");
 			renderer.Present();
 			Console.WriteLine(1 / deltaTime);	// Frame rate
 		}
 
 		public void Run()
 		{
+			Console.Clear();
 			currentTime = DateTime.Now.Ticks;
 			while (IsEnabled)
 			{
