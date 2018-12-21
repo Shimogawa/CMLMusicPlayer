@@ -8,10 +8,7 @@ namespace CMLMusicPlayer
 {
 	public class CMLApplication
 	{
-		public Random Random
-		{
-			get { return random; }
-		}
+		public Random Random { get; private set; }
 
 		/// <summary>
 		/// If the application is running.
@@ -28,7 +25,6 @@ namespace CMLMusicPlayer
 
 		private long currentTime;
 		private double deltaTime;
-		private Random random;
 		private int count;
 		private Renderer renderer;
 		private MusicPlayer musicPlayer;
@@ -49,7 +45,7 @@ namespace CMLMusicPlayer
 		{
 			Console.CursorVisible = false;
 			count = 0;
-			random = new Random();
+			Random = new Random();
 			renderer = new Renderer(10, 10);
 			musicPlayer = new MusicPlayer();
 			keyboardThread = new Thread(keyboardControl);
@@ -62,7 +58,7 @@ namespace CMLMusicPlayer
 		{
 			renderer.ResetBuffer();
 			renderer.Test(0, 0);
-			renderer.SetLine(6, "你好");
+			//renderer.SetLine(6, "你好");
 			renderer.Present();
 			Console.WriteLine(1 / deltaTime);   // Frame rate
 		}

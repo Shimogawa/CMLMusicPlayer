@@ -74,6 +74,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Coordinate.cs" />
+    <Compile Include="UI\CoordMapper.cs" />
     <Compile Include="UI\Renderer.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -10,26 +10,35 @@ namespace CMLMusicPlayer.UI
 
 	public class Renderer
 	{
-		public int Rows
+		public int XLimit
 		{
 			get;
 		}
 
-		public int Cols
+		public int YLimit
 		{
 			get;
 		}
 
-		private readonly int[,] gameScreen;
+		private readonly int bufferLimitX;
+		private readonly int bufferLimitY;
 
-		public const int EMPTY_CHAR = -1;
+		private readonly char[,] gameScreen;
+		private readonly bool[,] invalidPoints;
+		private readonly int[] maxRenderWidths; 
+		private const int DOUBLE_CHAR = 0x100;
+		private CoordMapper coordMapper;
 
-		public Renderer(int rows, int cols)
+		public Renderer(int maxX, int maxY)
 		{
-			Rows = rows;
-			Cols = cols;
-			gameScreen = new int[rows, cols];
-
+			XLimit = maxX;
+			YLimit = maxY;
+			bufferLimitX = maxX * 2;
+			bufferLimitY = maxY;
+			gameScreen = new char[bufferLimitX, bufferLimitY];
+			invalidPoints = new bool[bufferLimitX, bufferLimitY];
+			coordMapper = new CoordMapper(bufferLimitX, bufferLimitY);
+			maxRenderWidths = new int[bufferLimitX];
 		}
 
 		//private void drawSpecialChar(int c, int j)
@@ -49,24 +58,15 @@ namespace CMLMusicPlayer.UI
 
 		public void Present()
 		{
-			for(int i = 0; i < Rows; i++)
+			for (int j = 0; j < bufferLimitY; j++)
 			{
-				for(int j = 0; j < Cols; j++)
+				for (int i = 0; i < maxRenderWidths[j]; i++)
 				{
-					Console.SetCursorPosition(j, i);
-					if (gameScreen[i, j] == EMPTY_CHAR)
+					if (!invalidPoints[i, j])
 					{
-						continue;
+						Console.SetCursorPosition(i, j);
+						Console.Write(gameScreen[i, j]);
 					}
-					Console.Write((char)gameScreen[i, j]);
-					//if (gameScreen[i, j] >= 0x3000)
-					//{
-					//	drawSpecialChar(gameScreen[i, j], j);
-					//}
-					//else
-					//{
-					//	Console.Write((char)gameScreen[i, j]);
-					//}
 				}
 			}
 		}
@@ -74,55 +74,73 @@ namespace CMLMusicPlayer.UI
 		public void ResetBuffer()
 		{
 			Console.SetCursorPosition(0, 0);
-			for (int i = 0; i < Rows; i++)
+			for (int i = 0; i < bufferLimitX; i++)
 			{
-				for (int j = 0; j < Cols; j++)
+				for (int j = 0; j < bufferLimitY; j++)
 				{
 					gameScreen[i, j] = ' ';
+					invalidPoints[i, j] = false;
 				}
 			}
-		}
-
-		public void SetChar(int r, int c, int ch)
-		{
-			gameScreen[r, c] = ch;
-			if (c <= Cols - 1 && ch >= 0x3000)
+			for(int j = 0; j < bufferLimitY; j++)
 			{
-				gameScreen[r, c + 1] = EMPTY_CHAR;
+				maxRenderWidths[j] = XLimit;
 			}
 		}
 
-		public void SetLine(int row, string str)
+		public void SetChar(int x, int y, char ch)
 		{
-			if (str.Length > Cols)
-				throw new NotImplementedException();    // TODO
-
-			for (int sPtr = 0, gPtr = 0; gPtr < Cols && sPtr < str.Length; sPtr++, gPtr++)
+			var coord = coordMapper.QueryCoord(x, y);
+			gameScreen[coord.X, coord.Y] = ch;
+			if (ch >= DOUBLE_CHAR)
 			{
-				gameScreen[row, gPtr] = str[sPtr];
-				if (str[sPtr] >= 0x3000)
-				{
-					if (gPtr < Cols - 1)
-					{
-						gPtr++;
-						gameScreen[row, gPtr] = EMPTY_CHAR;
-					}
-				}
+				coordMapper.Set(x, y);
+				coord.X++;
+				gameScreen[coord.X, coord.Y] = ch;
+				invalidPoints[coord.X, coord.Y] = true;
+
+			}
+			else
+			{
+				coordMapper.Clear(x, y);
+			}
+			if (coord.X > maxRenderWidths[y])
+			{
+				maxRenderWidths[y] = coord.X;
 			}
 		}
 
-		public void SetColumn(int col, string str)
-		{
-			if (str.Length > Rows)
-				throw new NotImplementedException();
+		//public void SetLine(int row, string str)
+		//{
+		//	if (str.Length > YLimit)
+		//		throw new NotImplementedException();    // TODO
 
-			// TODO: 如果穿过中文字符的后一格，需要将该中文字符也一并清除。
+		//	for (int sPtr = 0, gPtr = 0; gPtr < YLimit && sPtr < str.Length; sPtr++, gPtr++)
+		//	{
+		//		gameScreen[row, gPtr] = str[sPtr];
+		//		if (str[sPtr] >= 0x3000)
+		//		{
+		//			if (gPtr < YLimit - 1)
+		//			{
+		//				gPtr++;
+		//				gameScreen[row, gPtr] = EMPTY_CHAR;
+		//			}
+		//		}
+		//	}
+		//}
 
-			for (int r = 0; r < str.Length; r++)
-			{
-				gameScreen[r, col] = str[r];
-			}
-		}
+		//public void SetColumn(int col, string str)
+		//{
+		//	if (str.Length > XLimit)
+		//		throw new NotImplementedException();
+
+		//	// TODO: 如果穿过中文字符的后一格，需要将该中文字符也一并清除。
+
+		//	for (int r = 0; r < str.Length; r++)
+		//	{
+		//		gameScreen[r, col] = str[r];
+		//	}
+		//}
 
 		#region TEST
 		public void Test(int r, int c)
@@ -132,7 +150,7 @@ namespace CMLMusicPlayer.UI
 				for (int j = c; j < c + 5; j++)
 				{
 					//用这个'█'就显示不了
-					gameScreen[i, j] = '█';
+					SetChar(i, j, '█');
 				}
 			}
 		}
