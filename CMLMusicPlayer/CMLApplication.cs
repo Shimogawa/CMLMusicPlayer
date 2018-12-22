@@ -14,15 +14,12 @@ namespace CMLMusicPlayer
 		/// <summary>
 		/// If the application is running.
 		/// </summary>
-		public bool IsEnabled
-		{
-			get; private set;
-		}
+		public bool IsEnabled{get; private set;}
 		
 		/// <summary>
 		/// The music player.
 		/// </summary>
-		public MusicPlayer MusicPlayer { get; private set; }
+		public MusicPlayHandler PlayHandler { get; private set; }
 
 		/// <summary>
 		/// The instance of this app.
@@ -31,10 +28,8 @@ namespace CMLMusicPlayer
 
 		private long currentTime;
 		private double deltaTime;
-		private int count;
 		private Renderer renderer;
-
-		private Thread keyboardThread;
+		private KeyBoardHandler keyBoardHandler;
 
 		private readonly int frameRate;
 		private readonly string musicFolder;
@@ -42,105 +37,71 @@ namespace CMLMusicPlayer
 
 		public CMLApplication(CMLConfig config)
 		{
-			this.frameRate = config.FrameRate;
-			this.musicFolder = config.MusicFolder;
+			frameRate = config.FrameRate;
+			musicFolder = config.MusicFolder;
 			ticksPerFrame = (long)(1e7 / frameRate);
 			init();
 		}
 
 		private void init()
 		{
-			Console.CursorVisible = false;
-			count = 0;
 			Random = new Random();
 			renderer = new Renderer(50, 25);
-			MusicPlayer = new MusicPlayer(musicFolder);
-			keyboardThread = new Thread(keyboardControl);
+			PlayHandler = new MusicPlayHandler(musicFolder);
 			Me = this;
 			IsEnabled = true;
 			Console.OutputEncoding = Encoding.UTF8;
+			Console.CursorVisible = false;
+
+			keyBoardHandler = new KeyBoardHandler();
+			// 可以非硬编码，由配置文件决定
+			keyBoardHandler.Register(ConsoleKey.Q, () => { Exit(); });
+			keyBoardHandler.Register(ConsoleKey.N, () => { PlayHandler.SwitchNextSong(); });
+			keyBoardHandler.Register(ConsoleKey.M, () => { PlayHandler.SwitchPrevSong(); });
+			keyBoardHandler.Register(ConsoleKey.S, () => { PlayHandler.Stop(); });
+			keyBoardHandler.Register(ConsoleKey.A, () => { PlayHandler.Play(); });
 		}
 		
-		private void draw()
-		{
-			renderer.ResetBuffer();
-			renderer.Test(0, 0);
-			renderer.DrawString(0, 5, "你好");
-			//renderer.SetLine(6, "你好");
-			renderer.Present();
-			Console.WriteLine(1 / deltaTime);   // Frame rate
-		}
-
-		public void Run()
+		private void drawLoop()
 		{
 			Console.Clear();
-			keyboardThread.Start();
 			currentTime = DateTime.Now.Ticks;
 			while (IsEnabled)
 			{
 				// 更新区域
-
-				draw();
-				MusicPlayer.Update();
-				
-				// 更新区域
+				// draw();
 
 				long delta;
-
 				// ticksPerFrame refresh duration 
 				while ((delta = DateTime.Now.Ticks - currentTime) < ticksPerFrame)
 					;
 				deltaTime = delta / 1e7;
 				currentTime = DateTime.Now.Ticks;
 			}
+		}
 
-			exit();
-			
+		public void Run()
+		{
+			keyBoardHandler.Start();
+			PlayHandler.Run();
+			// EventHandler 可以优化
+			PlayHandler.OnMusicEnd += PlayHandler_OnMusicEnd;
+			drawLoop();
 			// 处理Dispose
-			MusicPlayer.Dispose();
+			Exit();
 		}
 
-		private void keyboardControl()
+		private void PlayHandler_OnMusicEnd(object sender, EventArgs e)
 		{
-			while (IsEnabled)
-			{
-				var key = Console.ReadKey(true).Key;
-				switch (key)
-				{
-					case ConsoleKey.Q:
-						{
-							MusicPlayer.Stop();
-							IsEnabled = false;
-							break;
-						}
-					case ConsoleKey.N:
-						{
-							MusicPlayer.SwitchNextSong();
-							break;
-						}
-					case ConsoleKey.M:
-						{
-							MusicPlayer.SwitchPrevSong();
-							break;
-						}
-					case ConsoleKey.S:
-						{
-							MusicPlayer.Stop();
-							break;
-						}
-					case ConsoleKey.A:
-						{
-							MusicPlayer.Play();
-							break;
-						}
-					default:
-						break;
-				}
-			}
+			// sender可以是任意对象 （按需求来
+			var playhandler = sender as MusicPlayHandler;
+			playhandler.SwitchNextSong();
 		}
 
-		private void exit()
+		public void Exit()
 		{
+			PlayHandler.CleanUp();
+			IsEnabled = false;
 			Console.Clear();
 			Console.WriteLine(Strings.ExitWords);
 			Console.ReadLine();

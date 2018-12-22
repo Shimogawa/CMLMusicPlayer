@@ -66,6 +66,8 @@
     <Compile Include="Arguments\ArgParser.cs" />
     <Compile Include="Arguments\CMLConfig.cs" />
     <Compile Include="CMLApplication.cs" />
+    <Compile Include="KeyBoardHandler.cs" />
+    <Compile Include="MusicPlayHandler.cs" />
     <Compile Include="Music\MusicPlayer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
