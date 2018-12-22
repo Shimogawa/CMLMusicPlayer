@@ -66,8 +66,8 @@ namespace CMLMusicPlayer
 
 		private void PlaySong()
 		{
-			outputDevice.Stop();
 			waveProvider = new AudioFileReader(SongName[currentSong]);
+			outputDevice.Stop();
 			outputDevice.Init(waveProvider);
 			outputDevice.Play();
 			while (outputDevice.PlaybackState == PlaybackState.Playing)
@@ -104,6 +104,7 @@ namespace CMLMusicPlayer
 		{
 			playSongThread.Abort();
 			musicEnd = true;
+			NextSong();
 		}
 
 		/// <summary>
