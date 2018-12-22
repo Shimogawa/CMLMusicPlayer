@@ -39,6 +39,9 @@ namespace CMLMusicPlayer
 			SongName = new List<string>(Directory.EnumerateFiles(src));
 		}
 
+		/// <summary>
+		/// Call this function every frame.
+		/// </summary>
 		public void Update()
 		{
 			if (isStopped)

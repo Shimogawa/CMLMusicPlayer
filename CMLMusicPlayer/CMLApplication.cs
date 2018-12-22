@@ -53,7 +53,7 @@ namespace CMLMusicPlayer
 			Console.CursorVisible = false;
 			count = 0;
 			Random = new Random();
-			renderer = new Renderer(Console.WindowWidth, Console.WindowHeight);
+			renderer = new Renderer(50, 25);
 			MusicPlayer = new MusicPlayer(musicFolder);
 			keyboardThread = new Thread(keyboardControl);
 			Me = this;
@@ -93,6 +93,8 @@ namespace CMLMusicPlayer
 				deltaTime = delta / 1e7;
 				currentTime = DateTime.Now.Ticks;
 			}
+
+			exit();
 			
 			// 处理Dispose
 			MusicPlayer.Dispose();
@@ -107,7 +109,8 @@ namespace CMLMusicPlayer
 				{
 					case ConsoleKey.Q:
 						{
-							exit();
+							MusicPlayer.Stop();
+							IsEnabled = false;
 							break;
 						}
 					case ConsoleKey.N:
@@ -120,6 +123,16 @@ namespace CMLMusicPlayer
 							MusicPlayer.SwitchPrevSong();
 							break;
 						}
+					case ConsoleKey.S:
+						{
+							MusicPlayer.Stop();
+							break;
+						}
+					case ConsoleKey.A:
+						{
+							MusicPlayer.Play();
+							break;
+						}
 					default:
 						break;
 				}
@@ -128,9 +141,9 @@ namespace CMLMusicPlayer
 
 		private void exit()
 		{
-			IsEnabled = false;
 			Console.Clear();
 			Console.WriteLine(Strings.ExitWords);
+			Console.ReadLine();
 		}
 	}
 }

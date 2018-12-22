@@ -27,6 +27,5 @@ namespace CMLMusicPlayer
 			thread.Start();
 			Console.ReadKey();
 		}
-		
 	}
 }
