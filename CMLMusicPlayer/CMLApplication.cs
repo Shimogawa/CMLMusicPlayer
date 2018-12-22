@@ -4,6 +4,7 @@ using System;
 using System.Text;
 using System.Threading;
 using CMLMusicPlayer.Resources;
+using CMLMusicPlayer.Utils;
 
 namespace CMLMusicPlayer
 {
@@ -50,7 +51,6 @@ namespace CMLMusicPlayer
 
 		private void init()
 		{
-			Console.CursorVisible = false;
 			count = 0;
 			Random = new Random();
 			renderer = new Renderer(50, 25);
@@ -58,7 +58,11 @@ namespace CMLMusicPlayer
 			keyboardThread = new Thread(keyboardControl);
 			Me = this;
 			IsEnabled = true;
+
+			// Console Settings
 			Console.OutputEncoding = Encoding.UTF8;
+			Console.CursorVisible = false;
+			ConsoleUtil.FixConsoleWindowSize();
 		}
 		
 		private void draw()

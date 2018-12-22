@@ -78,6 +78,7 @@
     <Compile Include="UI\CoordMapper.cs" />
     <Compile Include="UI\Renderer.cs" />
     <Compile Include="UI\Shape.cs" />
+    <Compile Include="Utils\ConsoleUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
