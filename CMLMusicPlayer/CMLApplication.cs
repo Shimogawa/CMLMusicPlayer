@@ -2,6 +2,8 @@
 using CMLMusicPlayer.UI;
 using System;
 using System.Text;
+using System.Threading;
+using CMLMusicPlayer.Resources;
 
 namespace CMLMusicPlayer
 {
@@ -16,6 +18,11 @@ namespace CMLMusicPlayer
 		{
 			get; private set;
 		}
+		
+		/// <summary>
+		/// The music player.
+		/// </summary>
+		public MusicPlayer MusicPlayer { get; private set; }
 
 		/// <summary>
 		/// The instance of this app.
@@ -27,12 +34,16 @@ namespace CMLMusicPlayer
 		private int count;
 		private Renderer renderer;
 
+		private Thread keyboardThread;
+
 		private readonly int frameRate;
+		private readonly string musicFolder;
 		private readonly long ticksPerFrame;
 
 		public CMLApplication(CMLConfig config)
 		{
 			this.frameRate = config.FrameRate;
+			this.musicFolder = config.MusicFolder;
 			ticksPerFrame = (long)(1e7 / frameRate);
 			init();
 		}
@@ -42,7 +53,9 @@ namespace CMLMusicPlayer
 			Console.CursorVisible = false;
 			count = 0;
 			Random = new Random();
-			renderer = new Renderer(10, 10);
+			renderer = new Renderer(50, 25);
+			MusicPlayer = new MusicPlayer(musicFolder);
+			keyboardThread = new Thread(keyboardControl);
 			Me = this;
 			IsEnabled = true;
 			Console.OutputEncoding = Encoding.UTF8;
@@ -52,6 +65,7 @@ namespace CMLMusicPlayer
 		{
 			renderer.ResetBuffer();
 			renderer.Test(0, 0);
+			renderer.DrawString(0, 5, "你好");
 			//renderer.SetLine(6, "你好");
 			renderer.Present();
 			Console.WriteLine(1 / deltaTime);   // Frame rate
@@ -60,22 +74,76 @@ namespace CMLMusicPlayer
 		public void Run()
 		{
 			Console.Clear();
+			keyboardThread.Start();
 			currentTime = DateTime.Now.Ticks;
 			while (IsEnabled)
 			{
-				// 主要绘制函数区域
+				// 更新区域
 
 				draw();
-
+				MusicPlayer.Update();
+				
+				// 更新区域
 
 				long delta;
 
-				// [1s / frameRate] refresh duration 
+				// ticksPerFrame refresh duration 
 				while ((delta = DateTime.Now.Ticks - currentTime) < ticksPerFrame)
 					;
 				deltaTime = delta / 1e7;
 				currentTime = DateTime.Now.Ticks;
 			}
+
+			exit();
+			
+			// 处理Dispose
+			MusicPlayer.Dispose();
+		}
+
+		private void keyboardControl()
+		{
+			while (IsEnabled)
+			{
+				var key = Console.ReadKey(true).Key;
+				switch (key)
+				{
+					case ConsoleKey.Q:
+						{
+							MusicPlayer.Stop();
+							IsEnabled = false;
+							break;
+						}
+					case ConsoleKey.N:
+						{
+							MusicPlayer.SwitchNextSong();
+							break;
+						}
+					case ConsoleKey.M:
+						{
+							MusicPlayer.SwitchPrevSong();
+							break;
+						}
+					case ConsoleKey.S:
+						{
+							MusicPlayer.Stop();
+							break;
+						}
+					case ConsoleKey.A:
+						{
+							MusicPlayer.Play();
+							break;
+						}
+					default:
+						break;
+				}
+			}
+		}
+
+		private void exit()
+		{
+			Console.Clear();
+			Console.WriteLine(Strings.ExitWords);
+			Console.ReadLine();
 		}
 	}
 }

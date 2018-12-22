@@ -92,7 +92,7 @@ namespace CMLMusicPlayer.Arguments
 				if (!Directory.Exists(src))
 				{
 					Console.WriteLine(Strings.WrongPath);
-					src = "\\Musics";
+					src = "Musics";
 					Directory.CreateDirectory(src);
 				}
 				return 0;
