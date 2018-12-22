@@ -26,10 +26,7 @@ namespace CMLMusicPlayer.Arguments
 				args = new[] { "Musics" };
 			}
 
-			if (!ProcessArgs(args))
-			{
-				return;
-			}
+			ProcessArgs(args);
 
 //			var player = new MusicPlayer(src)
 //			{

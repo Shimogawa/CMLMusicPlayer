@@ -137,6 +137,11 @@ namespace CMLMusicPlayer
 							MusicPlayer.Play();
 							break;
 						}
+					case ConsoleKey.P:
+						{
+							MusicPlayer.Pause();
+							break;
+						}
 					default:
 						break;
 				}
@@ -147,7 +152,7 @@ namespace CMLMusicPlayer
 		{
 			Console.Clear();
 			Console.WriteLine(Strings.ExitWords);
-			Console.ReadLine();
+			Console.ReadKey(true);
 		}
 	}
 }
