@@ -28,12 +28,19 @@ namespace CMLMusicPlayer.Arguments
 
 			ProcessArgs(args);
 
-//			var player = new MusicPlayer(src)
-//			{
-//				Version = ver
-//			};
-//			player.Run();
-	}
+			if (!Directory.Exists(src) || Directory.GetFiles(src).Length == 0)
+			{
+				Console.WriteLine("No music file founded.");
+				Console.ReadKey(true);
+				Environment.Exit(0);
+			}
+
+			//			var player = new MusicPlayer(src)
+			//			{
+			//				Version = ver
+			//			};
+			//			player.Run();
+		}
 
 		public CMLConfig GetResult()
 		{

@@ -18,14 +18,9 @@ namespace CMLMusicPlayer
 		{
 			ArgParser argParser = new ArgParser(args);
 			CMLConfig config = argParser.GetResult();
+			CMLApplication application = new CMLApplication(config);
+			application.Run();
 			//CMLConfig.Write(config, "config.json");
-			Thread thread = new Thread(() =>
-			{
-				CMLApplication application = new CMLApplication(config);
-				application.Run();
-			});
-			thread.Start();
-			Console.ReadKey();
 		}
 	}
 }
