@@ -56,6 +56,46 @@ namespace CMLMusicPlayer.Utils
 		[DllImport("kernel32.dll", ExactSpelling = true)]
 		public static extern IntPtr GetConsoleWindow();
 
+
+
+		/// <summary>
+		/// Create console buffer
+		/// </summary>
+		/// <returns></returns>
+		[DllImport("gConsole.dll", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void InitializeBuffer(int width, int height);
+
+		/// <summary>
+		/// Present the content in the buffer to screen
+		/// </summary>
+		/// <returns></returns>
+		[DllImport("gConsole.dll", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void Present();
+
+
+		/// <summary>
+		/// Swap the front and back buffer
+		/// </summary>
+		/// <returns></returns>
+		[DllImport("gConsole.dll", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void SwapBuffer();
+
+		/// <summary>
+		/// Set the char at given position (Be careful it's row / col)
+		/// </summary>
+		/// <returns></returns>
+		[DllImport("gConsole.dll", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void SetChar(int r, int c, char ch);
+
+		/// <summary>
+		/// Swap the front and back buffer
+		/// </summary>
+		/// <returns></returns>
+		[DllImport("gConsole.dll", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void ClearBuffer();
+
+
+
 		/// <summary>
 		/// Fixes the size of the console window.
 		/// </summary>

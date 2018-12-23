@@ -21,21 +21,25 @@ namespace CMLMusicPlayer.UI
 		public void Update(Complex[] data)
 		{
 			fftData = data;
-			currentMax = 0;
-
+	
 		}
 
-		private int getYPos(Complex c)
+		private int getYPos(double d)
 		{
-			double l = Math.Sqrt(c.X * c.X + c.Y * c.Y);
-			double scale = l / currentMax;
+			double scale = d / currentMax;
 			return yLimit - 1 - (int)(scale * (yLimit - 1));
+		}
+
+		private double getValue(Complex c)
+		{
+			return Math.Sqrt(c.X * c.X + c.Y * c.Y);
 		}
 
 		public void Draw(Renderer renderer)
 		{
 			if (fftData == null)
 				return;
+			currentMax = 0;
 			int step = fftData.Length / xLimit + 1;
 			double[] range = new double[xLimit];
 			for (int i = 0; i < xLimit; i++)
@@ -45,14 +49,23 @@ namespace CMLMusicPlayer.UI
 			int k = 0;
 			foreach (var c in fftData)
 			{
-				double l = Math.Sqrt(c.X * c.X + c.Y * c.Y);
-				currentMax = Math.Max(currentMax, l);
-				range[k / step] += getYPos(fftData[k]) / (double)step;
+				double l = getValue(c);
+				range[k / step] += l / step;
 				k++;
+			}
+			foreach (var d in range)
+			{
+				currentMax = Math.Max(currentMax, d);
 			}
 			for (int i = 0; i < xLimit; i++)
 			{
-				renderer.SetChar(i, (int)(range[i]), '*');
+				int y = getYPos(range[i]);
+				if (y < 0)
+					continue;
+				for (int j = yLimit - 1; j >= y; j--)
+				{
+					renderer.SetChar(i, j, 'A');
+				}
 			}
 		}
 	}

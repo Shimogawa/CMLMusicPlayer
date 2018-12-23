@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CMLMusicPlayer.Utils;
+using System;
 
 namespace CMLMusicPlayer.UI
 {
@@ -23,9 +24,6 @@ namespace CMLMusicPlayer.UI
 		private readonly int bufferLimitX;
 		private readonly int bufferLimitY;
 
-		private readonly char[,] gameScreen;
-		private readonly bool[,] invalidPoints;
-		private readonly int[] maxRenderWidths; 
 		private const int DOUBLE_CHAR = 0x100;
 		private CoordMapper coordMapper;
 
@@ -35,10 +33,7 @@ namespace CMLMusicPlayer.UI
 			YLimit = maxY;
 			bufferLimitX = maxX * 2;
 			bufferLimitY = maxY;
-			gameScreen = new char[bufferLimitX, bufferLimitY];
-			invalidPoints = new bool[bufferLimitX, bufferLimitY];
-			coordMapper = new CoordMapper(bufferLimitX, bufferLimitY);
-			maxRenderWidths = new int[bufferLimitX];
+			ConsoleUtil.InitializeBuffer(maxX, maxY);
 		}
 
 
@@ -65,56 +60,33 @@ namespace CMLMusicPlayer.UI
 
 		public void Present()
 		{
-			for (int j = 0; j < bufferLimitY; j++)
-			{
-				for (int i = 0; i < maxRenderWidths[j]; i++)
-				{
-					if (!invalidPoints[i, j])
-					{
-						Console.SetCursorPosition(i, j);
-						Console.Write(gameScreen[i, j]);
-					}
-				}
-			}
+			ConsoleUtil.Present();
+			ConsoleUtil.SwapBuffer();
 		}
 
 		public void ResetBuffer()
 		{
-			Console.SetCursorPosition(0, 0);
-			for (int i = 0; i < bufferLimitX; i++)
-			{
-				for (int j = 0; j < bufferLimitY; j++)
-				{
-					gameScreen[i, j] = ' ';
-					invalidPoints[i, j] = false;
-				}
-			}
-			for(int j = 0; j < bufferLimitY; j++)
-			{
-				maxRenderWidths[j] = XLimit;
-			}
+			ConsoleUtil.ClearBuffer();
 		}
 
 		public void SetChar(int x, int y, char ch)
 		{
-			var coord = coordMapper.QueryCoord(x, y);
-			gameScreen[coord.X, coord.Y] = ch;
-			if (ch >= DOUBLE_CHAR)
-			{
-				coordMapper.Set(x, y);
-				coord.X++;
-				gameScreen[coord.X, coord.Y] = ch;
-				invalidPoints[coord.X, coord.Y] = true;
+			ConsoleUtil.SetChar(y, x, ch);
+			//var coord = coordMapper.QueryCoord(x, y);
+			//gameScreen[coord.X, coord.Y] = ch;
+			//if (ch >= DOUBLE_CHAR)
+			//{
+			//	coordMapper.Set(x, y);
+			//	coord.X++;
+			//	gameScreen[coord.X, coord.Y] = ch;
+			//	invalidPoints[coord.X, coord.Y] = true;
 
-			}
-			else
-			{
-				coordMapper.Clear(x, y);
-			}
-			if (coord.X > maxRenderWidths[y])
-			{
-				maxRenderWidths[y] = coord.X;
-			}
+			//}
+			//else
+			//{
+			//	coordMapper.Clear(x, y);
+			//}
+
 		}
 
 		public void DrawString(int x, int y, string str)
