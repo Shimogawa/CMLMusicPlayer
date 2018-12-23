@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace CMLMusicPlayer
 {
-	public class MusicPlayHandler : IDisposable
+	public class MusicPlayHandler
 	{
 		private bool isMusicEnd;
 		private bool isStopped;
@@ -28,7 +28,7 @@ namespace CMLMusicPlayer
 			isMusicEnd = false;
 			isStopped = true;
 			isPaused = false;
-			currentSong = -1;
+			currentSong = 0;
 			outputDevice = new WaveOutEvent
 			{
 				Volume = 0.7f
@@ -42,30 +42,19 @@ namespace CMLMusicPlayer
 			audioFile = new AudioFileReader(SongName[0]);
 		}
 
-		///// <summary>
-		///// Call this function every frame.
-		///// </summary>
-		//public void Update()
-		//{
-		//	while (true)
-		//	{
-		//		if (musicEnd)
-		//		{
-		//			NextSong();
-		//			return;
-		//		}
-		//	}
-		//}
-
 		public void Run()
 		{
-			currentSong = 0;
+			// 前置操作
+
+
 			Play();
 		}
 
 		private void playSong()
 		{
-			audioFile.Dispose();
+			// 性能关键点，考虑用cache
+			// Dispose 不要乱用， 容易引发异常且未观测到任何性能提升
+			// audioFile.Dispose();
 			audioFile = new AudioFileReader(SongName[currentSong]);
 			outputDevice.Stop();
 			outputDevice.Init(audioFile);
@@ -80,21 +69,8 @@ namespace CMLMusicPlayer
 			OnMusicEnd(this, new EventArgs());
 		}
 
-		private void nextSong()
+		private void playNew()
 		{
-			currentSong = (currentSong + 1) % SongName.Count;
-			playSongThread = new Thread(playSong);
-			playSongThread.Start();
-			isMusicEnd = false;
-			isStopped = false;
-			isPaused = false;
-		}
-
-		private void prevSong()
-		{
-			currentSong--;
-			if (currentSong < 0)
-				currentSong += SongName.Count;
 			playSongThread = new Thread(playSong);
 			playSongThread.Start();
 			isMusicEnd = false;
@@ -118,7 +94,8 @@ namespace CMLMusicPlayer
 				playSongThread.Abort();
 				isMusicEnd = true;
 			}
-			nextSong();
+			currentSong = (currentSong + 1) % SongName.Count;
+			playNew();
 		}
 
 		/// <summary>
@@ -127,7 +104,10 @@ namespace CMLMusicPlayer
 		public void SwitchPrevSong()
 		{
 			playSongThread.Abort();
-			prevSong();
+			currentSong--;
+			if (currentSong < 0)
+				currentSong += SongName.Count;
+			playNew();
 		}
 
 		/// <summary>
@@ -150,10 +130,7 @@ namespace CMLMusicPlayer
 		{
 			if (isStopped || isMusicEnd)
 			{
-				isStopped = false;
-				isMusicEnd = false;
-				playSongThread = new Thread(playSong);
-				playSongThread.Start();
+				playNew();
 				return;
 			}
 			if (isPaused)

@@ -81,6 +81,7 @@
     <Compile Include="UI\Renderer.cs" />
     <Compile Include="UI\Shape.cs" />
     <Compile Include="Utils\ConsoleUtil.cs" />
+    <Compile Include="Utils\FFT.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
