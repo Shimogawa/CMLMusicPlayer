@@ -32,7 +32,8 @@ namespace CMLMusicPlayer.Music
 			currentSong = 0;
 			outputDevice = new WaveOutEvent
 			{
-				Volume = 0.5f
+				Volume = 0.2f,
+				DesiredLatency = 200,
 			};
 		}
 
@@ -41,8 +42,6 @@ namespace CMLMusicPlayer.Music
 			PlaySrc = src;
 			SongName = new List<string>(Directory.EnumerateFiles(src));
 			audioFile = new AudioFileReader(SongName[0]);
-
-
 		}
 
 		public void Run()
@@ -60,7 +59,7 @@ namespace CMLMusicPlayer.Music
 			audioFile = new AudioFileReader(SongName[currentSong]);
 			SampleAggregator aggregator = new SampleAggregator(audioFile)
 			{
-				NotificationCount = audioFile.WaveFormat.SampleRate / 100,
+				NotificationCount = audioFile.WaveFormat.SampleRate / 10000,
 				PerformFFT = true,
 			};
 			aggregator.FFTCalculated += Aggregator_FFTCalculated;

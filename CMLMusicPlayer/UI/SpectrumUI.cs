@@ -11,24 +11,56 @@ namespace CMLMusicPlayer.UI
 	{
 		private readonly int xLimit;
 		private readonly int yLimit;
-		private Complex[] fftData;
-		private double currentMax;
-		public SpectrumUI(int Xlim, int Ylim)
+		private int updateCount;
+		private int validRange;
+		private int[] coords;
+
+		public SpectrumUI(int Xlim, int Ylim, int size)
 		{
 			xLimit = Xlim;
 			yLimit = Ylim;
-		}
-		public void Update(Complex[] data)
-		{
-			fftData = data;
-	
+			updateCount = 0;
+			validRange = size / 2;
+			coords = new int[Xlim + 10];
 		}
 
-		private int getYPos(double d)
+		private double GetYPosLog(Complex c)
 		{
-			double scale = d / currentMax;
-			return yLimit - 1 - (int)(scale * (yLimit - 1));
+			double intensityDB = 10 * Math.Log10(Math.Sqrt(c.X * c.X + c.Y * c.Y));
+			double minDB = -90;
+			if (intensityDB < minDB) intensityDB = minDB;
+			double percent = intensityDB / minDB;
+			double yPos = percent * yLimit;
+			return yPos;
 		}
+
+		public void Update(Complex[] data)
+		{
+			try
+			{
+				if (updateCount++ % 2 == 0)
+				{
+					return;
+				}
+				int step = validRange / xLimit;
+				for (int i = 0; i < data.Length / 2; i += step)
+				{
+					double yPos = 0;
+					for (int b = 0; b < step; b++)
+					{
+						yPos += GetYPosLog(data[i + b]);
+					}
+					int id = i / step;
+					coords[id] = (int)(yPos / step);
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+			}
+
+		}
+
 
 		private double getValue(Complex c)
 		{
@@ -36,35 +68,15 @@ namespace CMLMusicPlayer.UI
 		}
 
 		public void Draw(Renderer renderer)
-		{
-			if (fftData == null)
-				return;
-			currentMax = 0;
-			int step = fftData.Length / xLimit + 1;
-			double[] range = new double[xLimit];
+		{ 
 			for (int i = 0; i < xLimit; i++)
 			{
-				range[i] = 0.0;
-			}
-			int k = 0;
-			foreach (var c in fftData)
-			{
-				double l = getValue(c);
-				range[k / step] += l / step;
-				k++;
-			}
-			foreach (var d in range)
-			{
-				currentMax = Math.Max(currentMax, d);
-			}
-			for (int i = 0; i < xLimit; i++)
-			{
-				int y = getYPos(range[i]);
+				int y = coords[i];
 				if (y < 0)
 					continue;
-				for (int j = yLimit - 1; j >= y; j--)
+				for (int j = yLimit - 1; j > y; j--)
 				{
-					renderer.SetChar(i, j, 'A');
+					renderer.SetChar(i, j, '*');
 				}
 			}
 		}

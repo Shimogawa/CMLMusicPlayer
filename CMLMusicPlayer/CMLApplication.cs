@@ -54,7 +54,7 @@ namespace CMLMusicPlayer
 			Random = new Random();
 			renderer = new Renderer(consoleSize.X, consoleSize.Y);
 			PlayHandler = new MusicPlayHandler(musicFolder);
-			spectrumUI = new SpectrumUI(32, consoleSize.Y);
+			spectrumUI = new SpectrumUI(consoleSize.X, consoleSize.Y, 1024);
 			Me = this;
 			IsEnabled = true;
 
