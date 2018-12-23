@@ -15,7 +15,7 @@ namespace CMLMusicPlayer.Arguments
 		private int frameRate;
 		private string errorMessage;	// give out the error message.
 		
-		private const int DEFAULT_FRAMERATE = 20;
+		private const int DEFAULT_FRAMERATE = 60;
 
 		public ArgParser(string[] args)
 		{

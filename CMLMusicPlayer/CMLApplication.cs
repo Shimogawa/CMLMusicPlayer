@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using CMLMusicPlayer.Resources;
 using CMLMusicPlayer.Utils;
+using CMLMusicPlayer.Music;
 
 namespace CMLMusicPlayer
 {
@@ -31,26 +32,33 @@ namespace CMLMusicPlayer
 		private double deltaTime;
 		private Renderer renderer;
 		private KeyBoardHandler keyBoardHandler;
+		private SpectrumUI spectrumUI;
 
 		private readonly int frameRate;
 		private readonly string musicFolder;
 		private readonly long ticksPerFrame;
+		private readonly Coordinate<int> consoleSize;
 
 		public CMLApplication(CMLConfig config)
 		{
 			frameRate = config.FrameRate;
 			musicFolder = config.MusicFolder;
 			ticksPerFrame = (long)(1e7 / frameRate);
+			// 根据配置文件
+			consoleSize = new Coordinate<int>(50, 25);
 			init();
 		}
 
 		private void init()
 		{
 			Random = new Random();
-			renderer = new Renderer(50, 25);
+			renderer = new Renderer(consoleSize.X, consoleSize.Y);
 			PlayHandler = new MusicPlayHandler(musicFolder);
+			spectrumUI = new SpectrumUI(consoleSize.X, consoleSize.Y);
 			Me = this;
 			IsEnabled = true;
+
+			PlayHandler.OnFFTCalculated += PlayHandler_OnFFTCalculated;
 
 			// Console Settings
 			Console.OutputEncoding = Encoding.UTF8;
@@ -67,7 +75,7 @@ namespace CMLMusicPlayer
 			keyBoardHandler.Register(ConsoleKey.A, () => { PlayHandler.Play(); });
 			keyBoardHandler.Register(ConsoleKey.P, () => { PlayHandler.Pause(); });
 		}
-		
+
 		private void drawLoop()
 		{
 			Console.Clear();
@@ -76,6 +84,9 @@ namespace CMLMusicPlayer
 			{
 				// 更新区域
 				// draw();
+				renderer.ResetBuffer();
+				spectrumUI.Draw(renderer);
+				renderer.Present();
 
 				long delta;
 				// ticksPerFrame refresh duration 
@@ -92,9 +103,15 @@ namespace CMLMusicPlayer
 			PlayHandler.Run();
 			// EventHandler 可以优化
 			PlayHandler.OnMusicEnd += PlayHandler_OnMusicEnd;
+			PlayHandler.OnFFTCalculated += PlayHandler_OnFFTCalculated;
 			drawLoop();
 			// 处理Dispose
 			Exit();
+		}
+
+		private void PlayHandler_OnFFTCalculated(object sender, FftEventArgs e)
+		{
+			spectrumUI.Update(e.Result);
 		}
 
 		private void PlayHandler_OnMusicEnd(object sender, EventArgs e)

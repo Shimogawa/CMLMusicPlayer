@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
-namespace CMLMusicPlayer
+namespace CMLMusicPlayer.Music
 {
 	public class MusicPlayHandler
 	{
@@ -17,6 +17,7 @@ namespace CMLMusicPlayer
 		private AudioFileReader audioFile;		// 暂时使用AudioFileReader
 
 		public event EventHandler OnMusicEnd;
+		public event EventHandler<FftEventArgs> OnFFTCalculated;
 
 		public string PlaySrc { get; set; }
 		public Version Version { get; }
@@ -31,7 +32,7 @@ namespace CMLMusicPlayer
 			currentSong = 0;
 			outputDevice = new WaveOutEvent
 			{
-				Volume = 0.7f
+				Volume = 0.5f
 			};
 		}
 
@@ -40,12 +41,13 @@ namespace CMLMusicPlayer
 			PlaySrc = src;
 			SongName = new List<string>(Directory.EnumerateFiles(src));
 			audioFile = new AudioFileReader(SongName[0]);
+
+
 		}
 
 		public void Run()
 		{
 			// 前置操作
-
 
 			Play();
 		}
@@ -56,8 +58,14 @@ namespace CMLMusicPlayer
 			// Dispose 不要乱用， 容易引发异常且未观测到任何性能提升
 			// audioFile.Dispose();
 			audioFile = new AudioFileReader(SongName[currentSong]);
+			SampleAggregator aggregator = new SampleAggregator(audioFile)
+			{
+				NotificationCount = audioFile.WaveFormat.SampleRate / 100,
+				PerformFFT = true,
+			};
+			aggregator.FFTCalculated += Aggregator_FFTCalculated;
 			outputDevice.Stop();
-			outputDevice.Init(audioFile);
+			outputDevice.Init(aggregator);
 			outputDevice.Play();
 			while (outputDevice.PlaybackState == PlaybackState.Playing ||
 					outputDevice.PlaybackState == PlaybackState.Paused)
@@ -67,6 +75,11 @@ namespace CMLMusicPlayer
 			isMusicEnd = true;
 			// 事件驱动
 			OnMusicEnd(this, new EventArgs());
+		}
+
+		private void Aggregator_FFTCalculated(object sender, FftEventArgs e)
+		{
+			OnFFTCalculated?.Invoke(sender, e);
 		}
 
 		private void playNew()
