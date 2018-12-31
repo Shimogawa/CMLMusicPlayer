@@ -43,21 +43,6 @@ namespace CMLMusicPlayer.UI
 			shape.Draw(this);
 		}
 
-		//private void drawSpecialChar(int c, int j)
-		//{
-		//	switch (c)
-		//	{
-		//		case (int)CMLCharacter.FULL_BLOCK:
-		//			{
-		//				if (j % 2 == 0)
-		//					Console.Write('\u2588');
-		//				break;
-		//			}
-		//		default:
-		//			break;
-		//	}
-		//}
-
 		public void Present()
 		{
 			ConsoleUtil.Present();
@@ -100,6 +85,11 @@ namespace CMLMusicPlayer.UI
 				SetChar(x + i, y, str[i]);
 			}
 			// 换行情况需要单独考虑
+		}
+
+		public void DrawStringMultiLine(int x, int y, string str, int rowLength)
+		{
+			throw new NotImplementedException();
 		}
 
 		//public void SetColumn(int col, string str)

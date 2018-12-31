@@ -20,7 +20,7 @@ Use `.\CMLMusicPlayer [path]` to play musics (.mp3, .wav, etc) in the specific `
 
 ### 0.1.0.5
 
-Nothing notable. Initialize the project.
+Basic functions and framework completed.
 
 ## 4 Credits
 
