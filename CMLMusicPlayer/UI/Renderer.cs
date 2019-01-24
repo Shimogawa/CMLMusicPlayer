@@ -73,7 +73,7 @@ namespace CMLMusicPlayer.UI
 		{
 			if (x >= XLimit || y >= YLimit || x < 0 || y < 0)
 			{
-				throw new ArgumentOutOfRangeException("坐标超出界限");
+				return;
 			}
 			ConsoleUtil.SetChar(y, x, ch);
 			//var coord = coordMapper.QueryCoord(x, y);

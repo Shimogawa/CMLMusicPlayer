@@ -72,11 +72,20 @@ namespace CMLMusicPlayer.UI
 			for (int i = 0; i < xLimit; i++)
 			{
 				int y = coords[i];
-				if (y < 0)
-					continue;
-				for (int j = yLimit - 1; j > y; j--)
+				y -= yLimit / 2;
+				if (y > 0)
 				{
-					renderer.SetChar(i, j, '*');
+					for (int j = y + yLimit / 2; j > yLimit / 2; j--)
+					{
+						renderer.SetChar(i, j, '*');
+					}
+				}
+				else
+				{
+					for (int j = yLimit / 2; j > yLimit / 2 + y; j--)
+					{
+						renderer.SetChar(i, j, '*');
+					}
 				}
 			}
 		}
